@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap 5 ToDo App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .todo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <router-view></router-view>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-router@4/dist/vue-router.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Components
+        const TodoItem = {
+            template: `
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <p>{{ todo.body }}</p>
+                            <p><strong>End Date:</strong> {{ todo.endDate }}</p>
+                            <p><strong>Person:</strong> {{ todo.personName }}</p>
+                            <img :src="todo.personImage" class="todo-img" :alt="todo.personName">
+                            <p><strong>Status:</strong> {{ todo.status }}</p>
+                            <p><strong>Date Created:</strong> {{ todo.createdAt }}</p>
+                            <button class="btn btn-success btn-sm" @click="markAsDone(todo.id)">Mark as Done</button>
+                            <router-link :to="'/todo/' + todo.id" class="btn btn-warning btn-sm">Edit</router-link>
+                            <button class="btn btn-danger btn-sm" @click="deleteTodo(todo.id)">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `,
+            props: ['todo'],
+            methods: {
+                markAsDone(id) {
+                    // Implement mark as done logic (e.g., update API)
+                    console.log('Marking todo with ID', id, 'as done');
+                },
+                deleteTodo(id) {
+                    // Implement delete logic (e.g., update API)
+                    console.log('Deleting todo with ID', id);
+                }
+            }
+        };
+
+        const AddTodoModal = {
+            template: `
+                <div class="modal fade" id="addTodoModal" tabindex="-1" aria-labelledby="addTodoModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addTodoModalLabel">Add ToDo</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="addTodoForm" @submit.prevent="addTodo">
+                                    <div class="mb-3">
+                                        <label for="todoBody" class="form-label">ToDo</label>
+                                        <textarea class="form-control" id="todoBody" rows="3" required v-model="newTodo.body"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="todoEndDate" class="form-label">End Date</label>
+                                        <input type="date" class="form-control" id="todoEndDate" required v-model="newTodo.endDate">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="personName" class="form-label">Person Name</label>
+                                        <input type="text" class="form-control" id="personName" required v-model="newTodo.personName">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="personImage" class="form-label">Person Image</label>
+                                        <input type="file" class="form-control" id="personImage" required @change="handleImageUpload">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Add ToDo</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            data() {
+                return {
+                    newTodo: {
+                        body: '',
+                        endDate: '',
+                        personName: '',
+                        personImage: null // Placeholder for image
+                    }
+                };
+            },
+            methods: {
+                addTodo() {
+                    // Implement add todo logic (e.g., send data to API)
+                    console.log('Adding new todo:', this.newTodo);
+                    // Clear form
+                    this.newTodo = {
+                        body: '',
+                        endDate: '',
+                        personName: '',
+                        personImage: null
+                    };
+                },
+                handleImageUpload(event) {
+                    this.newTodo.personImage = event.target.files[0];
+                }
+            }
+        };
+
+        const EditTodo = {
+            template: `
+                <div class="container my-5">
+                    <h1 class="text-center mb-4">Edit ToDo</h1>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <form id="editTodoForm" @submit.prevent="updateTodo">
+                                <div class="mb-3">
+                                    <label for="editTodoBody" class="form-label">ToDo</label>
+                                    <textarea class="form-control" id="editTodoBody" rows="3" required v-model="todo.body"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editTodoEndDate" class="form-label">End Date</label>
+                                    <input type="date" class="form-control" id="editTodoEndDate" required v-model="todo.endDate">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editPersonName" class="form-label">Person Name</label>
+                                    <input type="text" class="form-control" id="editPersonName" required v-model="todo.personName">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editPersonImage" class="form-label">Person Image</label>
+                                    <input type="file" class="form-control" id="editPersonImage" required @change="handleImageUpload">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `,
+            data() {
+                return {
+                    todo: {}
+                };
+            },
+            mounted() {
+                // Get todo data based on ID from route params
+                // Example: Assuming todo data is fetched from API
+                const todoId = this.$route.params.id;
+                fetch(`/api/todos/${todoId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        this.todo = data;
+                    });
+            },
+            methods: {
+                updateTodo() {
+                    // Implement update todo logic (e.g., send data to API)
+                    console.log('Updating todo:', this.todo);
+                },
+                handleImageUpload(event) {
+                    this.todo.personImage = event.target.files[0];
+                }
+            }
+        };
+
+        const TodosView = {
+            template: `
+                <div class="container my-5">
+                    <h1 class="text-center mb-4">ToDo App</h1>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTodoModal">Add ToDo</button>
+                        </div>
+                        <div class="col">
+                            <select id="filterStatus" class="form-select">
+                                <option value="">Filter by Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="done">Done</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <input type="date" id="filterEndDate" class="form-control" placeholder="Filter by End Date">
+                        </div>
+                    </div>
+                    <div id="todoList" class="row">
+                        <todo-item v-for="todo in todos" :key="todo.id" :todo="todo"></todo-item>
+                    </div>
+                    <add-todo-modal></add-todo-modal>
+                </div>
+            `,
+            data() {
+                return {
+                    todos: []
+                };
+            },
+            mounted() {
+                // Fetch todos from API (example)
+                fetch('/api/todos')
+                    .then(response => response.json())
+                    .then(data => {
+                        this.todos = data;
+                    });
+            },
+            components: {
+                TodoItem,
+                AddTodoModal
+            }
+        };
+
+        const router = new VueRouter({
+            routes: [
+                { path: '/', component: TodosView },
+                { path: '/todo/:id', component: EditTodo }
+            ]
+        });
+
+        const app = Vue.createApp({
+            router
+        });
+
+        app.mount('#app');
+    </script>
+</body>
+</html>

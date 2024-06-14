@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .todo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-5">
+        <h1 class="text-center mb-4">ToDo App</h1>
+        <div class="row mb-3">
+            <div class="col">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTodoModal">Add ToDo</button>
+            </div>
+            <div class="col">
+                <select id="filterStatus" class="form-select">
+                    <option value="">Filter by Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="done">Done</option>
+                </select>
+            </div>
+            <div class="col">
+                <input type="date" id="filterEndDate" class="form-control" placeholder="Filter by End Date">
+            </div>
+        </div>
+        <div id="todoList" class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <p>Complete the project documentation.</p>
+                        <p><strong>End Date:</strong> 2023-06-20</p>
+                        <p><strong>Person:</strong> John Doe</p>
+                        <img src="https://via.placeholder.com/40" class="todo-img" alt="John Doe">
+                        <p><strong>Status:</strong> Pending</p>
+                        <p><strong>Date Created:</strong> 2023-06-13</p>
+                        <button class="btn btn-success btn-sm">Mark as Done</button>
+                        <a href="edit.html" class="btn btn-warning btn-sm">Edit</a>
+                        <button class="btn btn-danger btn-sm">Delete</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Repeat similar blocks for other ToDo items -->
+        </div>
+    </div>
+
+    <!-- Add ToDo Modal -->
+    <div class="modal fade" id="addTodoModal" tabindex="-1" aria-labelledby="addTodoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTodoModalLabel">Add ToDo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTodoForm">
+                        <div class="mb-3">
+                            <label for="todoBody" class="form-label">ToDo</label>
+                            <textarea class="form-control" id="todoBody" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="todoEndDate" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="todoEndDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="personName" class="form-label">Person Name</label>
+                            <input type="text" class="form-control" id="personName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="personImage" class="form-label">Person Image</label>
+                            <input type="file" class="form-control" id="personImage" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add ToDo</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
